@@ -1,7 +1,8 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyInstance, FastifyRequest, FastifyReply, preHandlerHookHandler } from 'fastify';
 import { UserService } from '../services/UserService';
 import { CreateUserRequest, UpdateUserRequest } from '../types/User';
 import { createUserSchema, updateUserSchema, getUserSchema, getUserByEmailSchema } from '../schemas/userSchema';
+import { jwtMiddleware } from '../../middlewares/jwtMiddleware';
 
 export class UserController {
   private userService: UserService;
@@ -17,31 +18,36 @@ export class UserController {
       handler: this.createUser.bind(this)
     });
 
-    // Get all users
+    // Get all users (protected route)
     fastify.get('/users', {
+      //preHandler: jwtMiddleware as preHandlerHookHandler,
       handler: this.getAllUsers.bind(this)
     });
 
     fastify.get('/users/email/:email', {
       schema: getUserByEmailSchema,
+      preHandler: jwtMiddleware as preHandlerHookHandler,
       handler: this.getUserByEmail.bind(this)
-    })
+    });
 
-    // Get user by ID
+    // Get user by ID (protected route)
     fastify.get('/users/:id', {
       schema: getUserSchema,
+      preHandler: jwtMiddleware as preHandlerHookHandler,
       handler: this.getUserById.bind(this)
     });
 
-    // Update user
+    // Update user (protected route)
     fastify.put('/users/:id', {
       schema: updateUserSchema,
+      preHandler: jwtMiddleware as preHandlerHookHandler,
       handler: this.updateUser.bind(this)
     });
 
-    // Delete user
+    // Delete user (protected route)
     fastify.delete('/users/:id', {
       schema: getUserSchema,
+      preHandler: jwtMiddleware as preHandlerHookHandler,
       handler: this.deleteUser.bind(this)
     });
   }

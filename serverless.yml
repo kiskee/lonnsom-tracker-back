@@ -66,3 +66,12 @@ functions:
             parameters:
               paths:
                 email: true
+
+plugins:
+   - serverless-prune-plugin
+   - serverless-dotenv-plugin
+
+custom:
+  prune:
+    automatic: true
+    number: 3
