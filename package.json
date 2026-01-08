@@ -1,0 +1,30 @@
+{
+  "name": "lonnsom-tracker",
+  "version": "1.0.0",
+  "description": "Journal API with Fastify and Node.js 24.x",
+  "main": "src/handler.ts",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "serverless offline",
+    "deploy": "serverless deploy"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/lib-dynamodb": "^3.0.0",
+    "@fastify/aws-lambda": "^5.0.0",
+    "bcryptjs": "^2.4.3",
+    "fastify": "^5.1.0",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.0.0",
+    "@types/uuid": "^10.0.0",
+    "serverless": "^4.0.0",
+    "serverless-offline": "^14.0.0",
+    "typescript": "^5.6.0"
+  }
+}
