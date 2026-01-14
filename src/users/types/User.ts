@@ -8,6 +8,7 @@ export interface User {
   picture?: string;
   sub?: string;
   password?: string;
+  role?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -22,6 +23,7 @@ export interface CreateUserRequest {
   picture?: string;
   sub?: string;
   password?: string;
+  role?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -35,6 +37,7 @@ export interface UpdateUserRequest {
   picture?: string;
   sub?: string;
   password?: string;
+  role?: string;
   updatedAt?: string;
 }
 
@@ -47,6 +50,7 @@ export interface UserResponse {
   name: string;
   picture?: string;
   sub?: string;
+  role?: string;
   createdAt: string;
   updatedAt: string;
 }
