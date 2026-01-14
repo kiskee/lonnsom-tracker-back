@@ -33,68 +33,12 @@ build:
 
 
 functions:
-  users:
-    handler: src/users/usersHandler.handler
+  api:
+    handler: src/apiHandler.handler
     memorySize: 256
     timeout: 10
     events:
-      - http:
-          path: users
-          method: post
-          cors: true
-      - http:
-          path: users
-          method: get
-          cors: true
-      - http:
-          path: users/{id}
-          method: get
-          cors: true
-      - http:
-          path: users/{id}
-          method: put
-          cors: true
-      - http:
-          path: users/{id}
-          method: delete
-          cors: true
-      - http:
-          path: users/email/{email}
-          method: get
-          cors: true
-          request:
-            parameters:
-              paths:
-                email: true
-  auth:
-    handler: src/auth/authHandler.handler
-    memorySize: 256
-    timeout: 10
-    events:
-      - http:
-          path: auth/login
-          method: post
-          cors: true
-      - http:
-          path: auth/login-google
-          method: post
-          cors: true
-      - http:
-          path: auth/logout
-          method: post
-          cors: true
-      - http:
-          path: auth/forgot-password/{email}
-          method: post
-          cors: true
-          request:
-            parameters:
-              paths:
-                email: true
-      - http:
-          path: auth/reset-password
-          method: post
-          cors: true
+      - httpApi: '*'
 
 plugins:
    - serverless-prune-plugin
