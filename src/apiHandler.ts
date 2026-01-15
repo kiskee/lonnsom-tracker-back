@@ -2,6 +2,7 @@ import fastify from 'fastify';
 import awsLambdaFastify from '@fastify/aws-lambda';
 import { AuthController } from './auth/controllers/AuthController';
 import { UserController } from './users/controllers/UserController';
+import {NoteController} from './notes/controllers/NoteController';
 
 // Initialize Fastify app outside handler for reuse
 const app = fastify({
@@ -22,9 +23,11 @@ app.addHook('preHandler', async (request, reply) => {
 // Register all routes
 const authController = new AuthController();
 const userController = new UserController();
+const noteController = new NoteController();
 
 authController.registerRoutes(app);
 userController.registerRoutes(app);
+noteController.registerRoutes(app);
 
 // Create Lambda handler
 const proxy = awsLambdaFastify(app);
