@@ -2,7 +2,11 @@ const mockApp = {
   addHook: jest.fn(),
   logger: true,
   close: jest.fn().mockResolvedValue(undefined),
-  ready: jest.fn().mockResolvedValue(undefined)
+  ready: jest.fn().mockResolvedValue(undefined),
+  post: jest.fn(),
+  get: jest.fn(),
+  put: jest.fn(),
+  delete: jest.fn()
 };
 
 const mockProxy = jest.fn();
@@ -21,6 +25,11 @@ jest.mock('../src/auth/controllers/AuthController', () => ({
 }));
 jest.mock('../src/users/controllers/UserController', () => ({
   UserController: jest.fn().mockImplementation(() => ({
+    registerRoutes: mockRegisterRoutes
+  }))
+}));
+jest.mock('../src/notes/controllers/NoteController', () => ({
+  NoteController: jest.fn().mockImplementation(() => ({
     registerRoutes: mockRegisterRoutes
   }))
 }));
