@@ -101,6 +101,25 @@ describe('AuthController', () => {
     expect(reply.send).toHaveBeenCalledWith({ token: 'jwt' });
   });
 
+  it('should handle loginGoogle error', async () => {
+    const request = {
+      body: { token: 'invalid-token' },
+    } as FastifyRequest;
+
+    authService.loginGoogle.mockRejectedValue({
+      statusCode: 400,
+      message: 'Invalid Google token',
+    });
+
+    await (controller as any).loginGoogle(request, reply);
+
+    expect(reply.code).toHaveBeenCalledWith(400);
+    expect(reply.send).toHaveBeenCalledWith({
+      message: 'Error interno',
+      error: 'Invalid Google token',
+    });
+  });
+
   // =========================
   // logout
   // =========================
@@ -133,6 +152,24 @@ describe('AuthController', () => {
     expect(reply.send).toHaveBeenCalledWith({ success: true });
   });
 
+  it('should handle logout error', async () => {
+    const request = {
+      headers: {
+        authorization: 'Bearer invalid-token',
+      },
+    } as FastifyRequest;
+
+    authService.logout.mockRejectedValue(new Error('Token expired') as never);
+
+    await (controller as any).logout(request, reply);
+
+    expect(reply.code).toHaveBeenCalledWith(500);
+    expect(reply.send).toHaveBeenCalledWith({
+      message: 'Error interno',
+      error: 'Token expired',
+    });
+  });
+
   // =========================
   // renewToken
   // =========================
@@ -161,6 +198,24 @@ describe('AuthController', () => {
     expect(authService.renewToken).toHaveBeenCalledWith('refresh123');
     expect(reply.code).toHaveBeenCalledWith(200);
     expect(reply.send).toHaveBeenCalledWith({ token: 'new-token' });
+  });
+
+  it('should handle renewToken error', async () => {
+    const request = {
+      body: { refreshToken: 'expired-refresh' },
+    } as FastifyRequest;
+
+    authService.renewToken.mockRejectedValue(
+      new Error('Refresh token expired') as any
+    );
+
+    await (controller as any).renewToken(request, reply);
+
+    expect(reply.code).toHaveBeenCalledWith(500);
+    expect(reply.send).toHaveBeenCalledWith({
+      message: 'Error interno',
+      error: 'Refresh token expired',
+    });
   });
 
   // =========================
@@ -193,6 +248,25 @@ describe('AuthController', () => {
     expect(reply.send).toHaveBeenCalledWith({ sent: true });
   });
 
+  it('should handle forgotPassword error', async () => {
+    const request = {
+      params: { email: 'invalid@test.com' },
+    } as FastifyRequest;
+
+    authService.forgotPassword.mockRejectedValue({
+      statusCode: 404,
+      message: 'User not found',
+    });
+
+    await (controller as any).forgotPassword(request, reply);
+
+    expect(reply.code).toHaveBeenCalledWith(404);
+    expect(reply.send).toHaveBeenCalledWith({
+      message: 'Error interno',
+      error: 'User not found',
+    });
+  });
+
   // =========================
   // resetPassword
   // =========================
@@ -218,5 +292,29 @@ describe('AuthController', () => {
     );
     expect(reply.code).toHaveBeenCalledWith(200);
     expect(reply.send).toHaveBeenCalledWith({ success: true });
+  });
+
+  it('should handle resetPassword error', async () => {
+    const request = {
+      body: {
+        email: 'test@test.com',
+        code: 'invalid',
+        token: 'token',
+        newPassword: 'newpass',
+      },
+    } as FastifyRequest;
+
+    authService.resetPassword.mockRejectedValue({
+      statusCode: 400,
+      message: 'Invalid reset code',
+    });
+
+    await (controller as any).resetPassword(request, reply);
+
+    expect(reply.code).toHaveBeenCalledWith(400);
+    expect(reply.send).toHaveBeenCalledWith({
+      message: 'Error interno',
+      error: 'Invalid reset code',
+    });
   });
 });
