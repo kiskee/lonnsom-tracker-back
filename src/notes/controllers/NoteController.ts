@@ -1,13 +1,9 @@
-import { NoteService } from "../services/NoteService";
-import {
-  FastifyRequest,
-  FastifyReply,
-  preHandlerHookHandler,
-} from "fastify";
-import { jwtMiddleware } from "../../middlewares/jwtMiddleware";
-import { createNoteSchema } from "../schemas/noteSchema";
-import { CreateNoteRequest } from "../dtos/createNoteDto";
-import { UpdateNoteRequest } from "../dtos/updateNoteDto";
+import { NoteService } from '../services/NoteService';
+import { FastifyRequest, FastifyReply, preHandlerHookHandler } from 'fastify';
+import { jwtMiddleware } from '../../middlewares/jwtMiddleware';
+import { createNoteSchema } from '../schemas/noteSchema';
+import { CreateNoteRequest } from '../dtos/createNoteDto';
+import { UpdateNoteRequest } from '../dtos/updateNoteDto';
 
 export class NoteController {
   private noteService: NoteService;
@@ -18,32 +14,32 @@ export class NoteController {
 
   async registerRoutes(fastify: any): Promise<void> {
     // Create note
-    fastify.post("/notes", {
+    fastify.post('/notes', {
       preHandler: jwtMiddleware as preHandlerHookHandler,
       schema: createNoteSchema,
       handler: this.createNote.bind(this),
     });
 
     // get note by id
-    fastify.get("/notes/:id", {
+    fastify.get('/notes/:id', {
       preHandler: jwtMiddleware as preHandlerHookHandler,
       handler: this.getNoteById.bind(this),
     });
 
     // get notes by user id
-    fastify.get("/notes/user/:userId", {
+    fastify.get('/notes/user/:userId', {
       preHandler: jwtMiddleware as preHandlerHookHandler,
       handler: this.getNotesByUserId.bind(this),
     });
 
     // update note
-    fastify.put("/notes/:id", {
+    fastify.put('/notes/:id', {
       preHandler: jwtMiddleware as preHandlerHookHandler,
       handler: this.updateNote.bind(this),
     });
 
     // delete note
-    fastify.delete("/notes/:id", {
+    fastify.delete('/notes/:id', {
       preHandler: jwtMiddleware as preHandlerHookHandler,
       handler: this.deleteNote.bind(this),
     });
@@ -88,12 +84,15 @@ export class NoteController {
   }
 
   private async updateNote(
-    request: FastifyRequest<{ Params: { id: string }; Body: UpdateNoteRequest }>,
+    request: FastifyRequest<{
+      Params: { id: string };
+      Body: UpdateNoteRequest;
+    }>,
     reply: FastifyReply
   ) {
     try {
       await this.noteService.updateNote(request.params.id, request.body);
-      reply.code(200).send({ message: "Nota actualizada correctamente" });
+      reply.code(200).send({ message: 'Nota actualizada correctamente' });
     } catch (error) {
       reply.code(400).send({ error: (error as Error).message });
     }
@@ -105,7 +104,7 @@ export class NoteController {
   ) {
     try {
       await this.noteService.deleteNote(request.params.id);
-      reply.code(200).send({ message: "Nota eliminada correctamente" });
+      reply.code(200).send({ message: 'Nota eliminada correctamente' });
     } catch (error) {
       reply.code(400).send({ error: (error as Error).message });
     }

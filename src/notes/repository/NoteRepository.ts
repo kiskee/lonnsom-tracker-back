@@ -1,16 +1,15 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
   PutCommand,
   GetCommand,
   QueryCommand,
-  ScanCommand,
   UpdateCommand,
   DeleteCommand,
-} from "@aws-sdk/lib-dynamodb";
-import { Note, NoteResponse } from "../types/Note";
-import { CreateNoteDto } from "../dtos/createNoteDto";
-import { UpdateNoteDto } from "../dtos/updateNoteDto";
+} from '@aws-sdk/lib-dynamodb';
+import { Note, NoteResponse } from '../types/Note';
+import { CreateNoteDto } from '../dtos/createNoteDto';
+import { UpdateNoteDto } from '../dtos/updateNoteDto';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -46,13 +45,13 @@ export class NoteRepository {
     const result = await docClient.send(
       new QueryCommand({
         TableName: this.tableName,
-        IndexName: "UserIndex",
-        KeyConditionExpression: "#user = :user",
+        IndexName: 'UserIndex',
+        KeyConditionExpression: '#user = :user',
         ExpressionAttributeNames: {
-          "#user": "user",
+          '#user': 'user',
         },
         ExpressionAttributeValues: {
-          ":user": userId,
+          ':user': userId,
         },
         ScanIndexForward: false,
       })
@@ -63,7 +62,7 @@ export class NoteRepository {
 
   async update(noteId: string, updateData: UpdateNoteDto): Promise<any> {
     if (!noteId || !updateData || Object.keys(updateData).length === 0) {
-      throw new Error("noteId and updateData are required");
+      throw new Error('noteId and updateData are required');
     }
 
     const updateExpression: string[] = [];
@@ -79,7 +78,7 @@ export class NoteRepository {
     });
 
     if (updateExpression.length === 0) {
-      throw new Error("No valid fields to update");
+      throw new Error('No valid fields to update');
     }
 
     try {
@@ -87,16 +86,16 @@ export class NoteRepository {
         new UpdateCommand({
           TableName: this.tableName,
           Key: { id: noteId },
-          UpdateExpression: `SET ${updateExpression.join(", ")}`,
+          UpdateExpression: `SET ${updateExpression.join(', ')}`,
           ExpressionAttributeNames: expressionAttributeNames,
           ExpressionAttributeValues: expressionAttributeValues,
-          ReturnValues: "ALL_NEW",
+          ReturnValues: 'ALL_NEW',
         })
       );
 
       return result.Attributes;
     } catch (error: any) {
-      if (error.name === "ValidationException") {
+      if (error.name === 'ValidationException') {
         throw new Error(`Invalid update data: ${error.message}`);
       }
       throw error;

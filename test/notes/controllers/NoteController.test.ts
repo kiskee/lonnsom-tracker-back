@@ -28,7 +28,7 @@ describe('NoteController', () => {
         date: '2024-01-01',
         title: 'Test Note',
         content: 'Test content',
-        sentiment: 'positive'
+        sentiment: 'positive',
       };
       const createdNote = { id: 'note123', ...noteData };
 
@@ -45,7 +45,9 @@ describe('NoteController', () => {
     it('should handle create note error', async () => {
       const noteData = { user: 'user123', title: 'Test' };
       mockRequest = { body: noteData };
-      mockNoteService.createNote.mockRejectedValue(new Error('Creation failed'));
+      mockNoteService.createNote.mockRejectedValue(
+        new Error('Creation failed')
+      );
 
       await (noteController as any).createNote(mockRequest, mockReply);
 
@@ -72,12 +74,16 @@ describe('NoteController', () => {
     it('should handle note not found', async () => {
       const noteId = 'nonexistent';
       mockRequest = { params: { id: noteId } };
-      mockNoteService.getNoteById.mockRejectedValue(new Error('Nota no encontrada'));
+      mockNoteService.getNoteById.mockRejectedValue(
+        new Error('Nota no encontrada')
+      );
 
       await (noteController as any).getNoteById(mockRequest, mockReply);
 
       expect(mockReply.code).toHaveBeenCalledWith(404);
-      expect(mockReply.send).toHaveBeenCalledWith({ error: 'Nota no encontrada' });
+      expect(mockReply.send).toHaveBeenCalledWith({
+        error: 'Nota no encontrada',
+      });
     });
   });
 
@@ -99,7 +105,9 @@ describe('NoteController', () => {
     it('should handle error getting notes by user id', async () => {
       const userId = 'user123';
       mockRequest = { params: { userId } };
-      mockNoteService.getNotesByUserId.mockRejectedValue(new Error('User not found'));
+      mockNoteService.getNotesByUserId.mockRejectedValue(
+        new Error('User not found')
+      );
 
       await (noteController as any).getNotesByUserId(mockRequest, mockReply);
 
@@ -118,9 +126,14 @@ describe('NoteController', () => {
 
       await (noteController as any).updateNote(mockRequest, mockReply);
 
-      expect(mockNoteService.updateNote).toHaveBeenCalledWith(noteId, updateData);
+      expect(mockNoteService.updateNote).toHaveBeenCalledWith(
+        noteId,
+        updateData
+      );
       expect(mockReply.code).toHaveBeenCalledWith(200);
-      expect(mockReply.send).toHaveBeenCalledWith({ message: 'Nota actualizada correctamente' });
+      expect(mockReply.send).toHaveBeenCalledWith({
+        message: 'Nota actualizada correctamente',
+      });
     });
 
     it('should handle update note error', async () => {
@@ -148,7 +161,9 @@ describe('NoteController', () => {
 
       expect(mockNoteService.deleteNote).toHaveBeenCalledWith(noteId);
       expect(mockReply.code).toHaveBeenCalledWith(200);
-      expect(mockReply.send).toHaveBeenCalledWith({ message: 'Nota eliminada correctamente' });
+      expect(mockReply.send).toHaveBeenCalledWith({
+        message: 'Nota eliminada correctamente',
+      });
     });
 
     it('should handle delete note error', async () => {

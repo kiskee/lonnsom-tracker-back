@@ -8,9 +8,7 @@ export const getUserFromRequest = (req: FastifyRequest): any | null => {
     const authHeader = req.headers.authorization || '';
 
     // Extrae el token del header "Authorization: Bearer <token>"
-    const token = authHeader.startsWith('Bearer ')
-      ? authHeader.slice(7)
-      : null;
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
     if (!token) return null;
 
@@ -19,7 +17,10 @@ export const getUserFromRequest = (req: FastifyRequest): any | null => {
     // Devuelve la info del usuario (payload del JWT)
     return decoded;
   } catch (error) {
-    console.error('Error al obtener usuario desde el request:', (error as Error).message);
+    console.error(
+      'Error al obtener usuario desde el request:',
+      (error as Error).message
+    );
     return null;
   }
 };

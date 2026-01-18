@@ -1,11 +1,11 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { LoginDto, GoogleDto, ResetPasswordDto } from "../dtos/AuthDto";
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { LoginDto, GoogleDto, ResetPasswordDto } from '../dtos/AuthDto';
 import {
   loginSchema,
   googleSchema,
   resetPasswordSchema,
-} from "../schemas/authSchema";
-import { AuthService } from "../services/authService";
+} from '../schemas/authSchema';
+import { AuthService } from '../services/authService';
 
 export class AuthController {
   private authService: AuthService;
@@ -16,34 +16,34 @@ export class AuthController {
 
   async registerRoutes(fastify: FastifyInstance): Promise<void> {
     // Login
-    fastify.post("/auth/login", {
+    fastify.post('/auth/login', {
       schema: { body: loginSchema },
       handler: this.login.bind(this),
     });
 
     // Login Google
-    fastify.post("/auth/login-google", {
+    fastify.post('/auth/login-google', {
       schema: { body: googleSchema },
       handler: this.loginGoogle.bind(this),
     });
 
     // Logout
-    fastify.post("/auth/logout", {
+    fastify.post('/auth/logout', {
       handler: this.logout.bind(this),
     });
 
     // Renew Token
-    fastify.post("/auth/renew-token", {
+    fastify.post('/auth/renew-token', {
       handler: this.renewToken.bind(this),
     });
 
     // Forgot Password
-    fastify.post("/auth/forgot-password/:email", {
+    fastify.post('/auth/forgot-password/:email', {
       handler: this.forgotPassword.bind(this),
     });
 
     // Reset Password
-    fastify.post("/auth/reset-password", {
+    fastify.post('/auth/reset-password', {
       schema: { body: resetPasswordSchema },
       handler: this.resetPassword.bind(this),
     });
@@ -52,7 +52,7 @@ export class AuthController {
   private async login(
     request: FastifyRequest<{ Body: any }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     const dto = new LoginDto(request.body as any);
 
     try {
@@ -60,9 +60,8 @@ export class AuthController {
 
       reply.code(200).send(result);
     } catch (error: any) {
-      console.error("Error en login:", error);
       reply.code(error.statusCode || 500).send({
-        message: "Error interno",
+        message: 'Error interno',
         error: error.message,
       });
     }
@@ -71,35 +70,36 @@ export class AuthController {
   private async loginGoogle(
     request: FastifyRequest<{ Body: any }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     const dto = new GoogleDto(request.body as any);
 
     try {
       const result = await this.authService.loginGoogle(dto);
       reply.code(200).send(result);
     } catch (error: any) {
-      console.error("Error en login-google:", error);
       reply.code(error.statusCode || 500).send({
-        message: "Error interno",
+        message: 'Error interno',
         error: error.message,
       });
     }
   }
 
-  private async logout(request: FastifyRequest, reply: FastifyReply) {
-    const token = request.headers.authorization?.replace("Bearer ", "");
+  private async logout(
+    request: FastifyRequest,
+    reply: FastifyReply
+  ): Promise<void> {
+    const token = request.headers.authorization?.replace('Bearer ', '');
 
     if (!token) {
-      return reply.code(401).send({ message: "Token no proporcionado" });
+      return reply.code(401).send({ message: 'Token no proporcionado' });
     }
 
     try {
       const result = await this.authService.logout(token);
       reply.code(200).send(result);
     } catch (error: any) {
-      console.error("Error en logout:", error);
       reply.code(500).send({
-        message: "Error interno",
+        message: 'Error interno',
         error: error.message,
       });
     }
@@ -108,22 +108,21 @@ export class AuthController {
   private async renewToken(
     request: FastifyRequest<{ Body: { refreshToken?: string } }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     const { refreshToken } = request.body || {};
 
     if (!refreshToken) {
       return reply
         .code(401)
-        .send({ message: "Refresh token no proporcionado" });
+        .send({ message: 'Refresh token no proporcionado' });
     }
 
     try {
       const result = await this.authService.renewToken(refreshToken);
       reply.code(200).send(result);
     } catch (error: any) {
-      console.error("Error en renew-token:", error);
       reply.code(500).send({
-        message: "Error interno",
+        message: 'Error interno',
         error: error.message,
       });
     }
@@ -132,20 +131,19 @@ export class AuthController {
   private async forgotPassword(
     request: FastifyRequest<{ Params: { email: string } }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     const email = request.params.email;
 
     if (!email) {
-      return reply.code(400).send({ message: "Email no proporcionado" });
+      return reply.code(400).send({ message: 'Email no proporcionado' });
     }
 
     try {
       const result = await this.authService.forgotPassword(email);
       reply.code(200).send(result);
     } catch (error: any) {
-      console.error("Error en forgot-password:", error);
       reply.code(error.statusCode || 500).send({
-        message: "Error interno",
+        message: 'Error interno',
         error: error.message,
       });
     }
@@ -154,7 +152,7 @@ export class AuthController {
   private async resetPassword(
     request: FastifyRequest<{ Body: any }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     const dto = new ResetPasswordDto(request.body as any);
 
     try {
@@ -166,9 +164,8 @@ export class AuthController {
       );
       reply.code(200).send(result);
     } catch (error: any) {
-      console.error("Error en reset-password:", error);
       reply.code(error.statusCode || 500).send({
-        message: "Error interno",
+        message: 'Error interno',
         error: error.message,
       });
     }

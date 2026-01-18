@@ -1,7 +1,7 @@
-import { NoteRepository } from "../repository/NoteRepository";
-import { CreateNoteDto, Note, CreateNoteRequest } from "../dtos/createNoteDto";
-import { UpdateNoteDto, UpdateNoteRequest } from "../dtos/updateNoteDto";
-import { v4 as uuidv4 } from "uuid";
+import { NoteRepository } from '../repository/NoteRepository';
+import { CreateNoteDto, Note, CreateNoteRequest } from '../dtos/createNoteDto';
+import { UpdateNoteDto, UpdateNoteRequest } from '../dtos/updateNoteDto';
+import { v4 as uuidv4 } from 'uuid';
 
 export class NoteService {
   private noteRepository: NoteRepository;
@@ -23,7 +23,7 @@ export class NoteService {
   async getNoteById(noteId: string): Promise<Note> {
     const note = await this.noteRepository.findById(noteId);
     if (!note) {
-      throw new Error("Nota no encontrada");
+      throw new Error('Nota no encontrada');
     }
     return note;
   }
@@ -32,7 +32,10 @@ export class NoteService {
     return await this.noteRepository.findByUserId(userId);
   }
 
-  async updateNote(noteId: string, updateData: UpdateNoteRequest): Promise<void> {
+  async updateNote(
+    noteId: string,
+    updateData: UpdateNoteRequest
+  ): Promise<void> {
     const existingNote = await this.noteRepository.findById(noteId);
     if (!existingNote) {
       throw new Error('Nota no encontrada');
@@ -46,7 +49,7 @@ export class NoteService {
   async deleteNote(noteId: string): Promise<void> {
     const note = await this.noteRepository.findById(noteId);
     if (!note) {
-      throw new Error("Nota no encontrada");
+      throw new Error('Nota no encontrada');
     }
     await this.noteRepository.delete(noteId);
   }

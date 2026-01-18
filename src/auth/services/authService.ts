@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import { UserRepository } from "../../users/repository/UserRepository";
-import { UserService } from "../../users/services/UserService";
-import { LoginDto, GoogleDto } from "../dtos/AuthDto";
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { UserRepository } from '../../users/repository/UserRepository';
+import { UserService } from '../../users/services/UserService';
+import { LoginDto, GoogleDto } from '../dtos/AuthDto';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -17,91 +17,83 @@ export class AuthService {
     this.userService = new UserService();
   }
 
-  async login(data: LoginDto) {
-    try {
-      const user = await this.userRepository.findByEmail(data.email);
+  async login(data: LoginDto): Promise<any> {
+    const user = await this.userRepository.findByEmail(data.email);
 
-      if (!user) {
-        const error = new Error("Usuario con este email no existe");
-        (error as any).statusCode = 401;
-        throw error;
-      }
-
-      const isPasswordValid = await this.comparePasswords(
-        data.password,
-        user.password as string
-      );
-
-      if (!isPasswordValid) {
-        const error = new Error("Usuario o Contraseña invalidos");
-        (error as any).statusCode = 401;
-        throw error;
-      }
-
-      const accessToken = this.generateAccessToken(user);
-      const refreshToken = this.generateRefreshToken(user);
-      return {
-        user: {
-          id: user.id,
-          email: user.email,
-          picture: user.picture,
-          name: user.name,
-          role: user.role,
-        },
-        accessToken,
-        refreshToken,
-      };
-    } catch (error) {
+    if (!user) {
+      const error = new Error('Usuario con este email no existe');
+      (error as any).statusCode = 401;
       throw error;
     }
-  }
 
-  async loginGoogle(data: GoogleDto) {
-    try {
-      if (!data.email_verified) {
-        const error = new Error("Error al intentar entrar con Google");
-        (error as any).statusCode = 401;
-        throw error;
-      }
+    const isPasswordValid = await this.comparePasswords(
+      data.password,
+      user.password as string
+    );
 
-      let user = await this.userRepository.findByEmail(data.email);
-
-      if (!user) {
-        user = await this.userService.createUser(data);
-      }
-
-      if (user.sub !== data.sub) {
-        const error = new Error("Error al intentar entrar con Google");
-        (error as any).statusCode = 401;
-        throw error;
-      }
-
-      const accessToken = this.generateAccessToken(user);
-      const refreshToken = this.generateRefreshToken(user);
-
-      return {
-        user: {
-          id: user.id,
-          email: user.email,
-          role: user.role,
-          picture: user.picture,
-          name: user.name,
-        },
-        accessToken,
-        refreshToken,
-      };
-    } catch (error) {
+    if (!isPasswordValid) {
+      const error = new Error('Usuario o Contraseña invalidos');
+      (error as any).statusCode = 401;
       throw error;
     }
+
+    const accessToken = this.generateAccessToken(user);
+    const refreshToken = this.generateRefreshToken(user);
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        picture: user.picture,
+        name: user.name,
+        role: user.role,
+      },
+      accessToken,
+      refreshToken,
+    };
   }
 
-  logout(token: string) {
+  async loginGoogle(data: GoogleDto): Promise<any> {
+    if (!data.email_verified) {
+      const error = new Error('Error al intentar entrar con Google');
+      (error as any).statusCode = 401;
+      throw error;
+    }
+
+    let user = await this.userRepository.findByEmail(data.email);
+
+    if (!user) {
+      user = await this.userService.createUser(data);
+    }
+
+    if (user.sub !== data.sub) {
+      const error = new Error('Error al intentar entrar con Google');
+      (error as any).statusCode = 401;
+      throw error;
+    }
+
+    const accessToken = this.generateAccessToken(user);
+    const refreshToken = this.generateRefreshToken(user);
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        picture: user.picture,
+        name: user.name,
+      },
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  logout(token: string): { message: string } {
     this.blacklistedTokens.add(token);
-    return { message: "Logout successful" };
+    return { message: 'Logout successful' };
   }
 
-  async renewToken(data: any) {
-    return { message: "Token renewed", data };
+  async renewToken(data: any): Promise<{ message: string; data: any }> {
+    return { message: 'Token renewed', data };
   }
 
   generateAccessToken(user: any): string {
@@ -112,7 +104,7 @@ export class AuthService {
       },
       JWT_SECRET,
       {
-        expiresIn: "60m",
+        expiresIn: '60m',
       }
     );
   }
@@ -125,7 +117,7 @@ export class AuthService {
       },
       JWT_SECRET,
       {
-        expiresIn: "7d",
+        expiresIn: '7d',
       }
     );
   }
@@ -142,63 +134,55 @@ export class AuthService {
     resetCode: string,
     resetToken: string,
     newPassword: string
-  ) {
-    try {
-      const validation = await this.validateResetCode(
-        email,
-        resetCode,
-        resetToken
-      );
+  ): Promise<{ message: string; email: string }> {
+    const validation = await this.validateResetCode(
+      email,
+      resetCode,
+      resetToken
+    );
 
-      if (!validation.valid) {
-        const error = new Error("Código inválido o expirado");
-        (error as any).statusCode = 400;
-        throw error;
-      }
-
-      const user = await this.userRepository.findByEmail(email);
-      if (!user) {
-        const error = new Error("Usuario no encontrado");
-        (error as any).statusCode = 404;
-        throw error;
-      }
-
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-      await this.userRepository.update(user.id, { password: hashedPassword });
-
-      return {
-        message: "Contraseña actualizada exitosamente",
-        email: email,
-      };
-    } catch (error) {
-      console.error("Error en resetPassword:", error);
+    if (!validation.valid) {
+      const error = new Error('Código inválido o expirado');
+      (error as any).statusCode = 400;
       throw error;
     }
+
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      const error = new Error('Usuario no encontrado');
+      (error as any).statusCode = 404;
+      throw error;
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await this.userRepository.update(user.id, { password: hashedPassword });
+
+    return {
+      message: 'Contraseña actualizada exitosamente',
+      email: email,
+    };
   }
 
-  async forgotPassword(email: string) {
-    try {
-      const user = await this.userRepository.findByEmail(email);
+  async forgotPassword(
+    email: string
+  ): Promise<{ message: string; email: string; resetToken: string }> {
+    const user = await this.userRepository.findByEmail(email);
 
-      if (!user) {
-        const error = new Error("Usuario con este email no existe");
-        (error as any).statusCode = 404;
-        throw error;
-      }
-
-      const resetCode = this.generateResetCode();
-      const resetToken = this.createResetToken(email, user.id, resetCode);
-
-      return {
-        message: "Código enviado al correo electrónico",
-        email: email,
-        resetToken: resetToken,
-      };
-    } catch (error) {
-      console.error("Error en forgotPassword:", error);
+    if (!user) {
+      const error = new Error('Usuario con este email no existe');
+      (error as any).statusCode = 404;
       throw error;
     }
+
+    const resetCode = this.generateResetCode();
+    const resetToken = this.createResetToken(email, user.id, resetCode);
+
+    return {
+      message: 'Código enviado al correo electrónico',
+      email: email,
+      resetToken: resetToken,
+    };
   }
 
   generateResetCode(): string {
@@ -210,32 +194,32 @@ export class AuthService {
       email: email,
       userId: userId,
       resetCode: resetCode,
-      purpose: "password_reset",
+      purpose: 'password_reset',
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 30 * 60,
     };
 
-    return jwt.sign(payload, JWT_SECRET, { algorithm: "HS256" });
+    return jwt.sign(payload, JWT_SECRET, { algorithm: 'HS256' });
   }
 
   async validateResetCode(
     email: string,
     inputCode: string,
     resetToken: string
-  ) {
+  ): Promise<{ valid: boolean; userId?: string; email?: string }> {
     try {
       const decoded = jwt.verify(resetToken, JWT_SECRET) as any;
 
-      if (decoded.purpose !== "password_reset") {
-        throw new Error("Token inválido");
+      if (decoded.purpose !== 'password_reset') {
+        throw new Error('Token inválido');
       }
 
       if (decoded.email !== email) {
-        throw new Error("Email no coincide");
+        throw new Error('Email no coincide');
       }
 
       if (decoded.resetCode !== inputCode) {
-        throw new Error("Código incorrecto");
+        throw new Error('Código incorrecto');
       }
 
       return {
@@ -244,14 +228,14 @@ export class AuthService {
         email: decoded.email,
       };
     } catch (error: any) {
-      if (error.name === "TokenExpiredError") {
-        const err = new Error("El código ha expirado. Solicita uno nuevo.");
+      if (error.name === 'TokenExpiredError') {
+        const err = new Error('El código ha expirado. Solicita uno nuevo.');
         (err as any).statusCode = 410;
         throw err;
       }
 
-      if (error.name === "JsonWebTokenError") {
-        const err = new Error("Código o token inválido");
+      if (error.name === 'JsonWebTokenError') {
+        const err = new Error('Código o token inválido');
         (err as any).statusCode = 400;
         throw err;
       }

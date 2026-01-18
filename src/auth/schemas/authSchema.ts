@@ -4,27 +4,27 @@ export const googleSchema = {
   properties: {
     email: {
       type: 'string',
-      format: 'email'
+      format: 'email',
     },
     email_verified: {
-      type: 'boolean'
+      type: 'boolean',
     },
     family_name: {
-      type: 'string'
+      type: 'string',
     },
     given_name: {
-      type: 'string'
+      type: 'string',
     },
     name: {
-      type: 'string'
+      type: 'string',
     },
     picture: {
-      type: 'string'
+      type: 'string',
     },
     sub: {
-      type: 'string'
-    }
-  }
+      type: 'string',
+    },
+  },
 };
 
 export const loginSchema = {
@@ -34,15 +34,15 @@ export const loginSchema = {
     email: {
       type: 'string',
       format: 'email',
-      maxLength: 100
+      maxLength: 100,
     },
     password: {
       type: 'string',
       minLength: 8,
       maxLength: 50,
-      pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])'
-    }
-  }
+      pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])',
+    },
+  },
 };
 
 export const resetPasswordSchema = {
@@ -50,17 +50,17 @@ export const resetPasswordSchema = {
   required: ['token', 'newPassword', 'code', 'email'],
   properties: {
     token: {
-      type: 'string'
+      type: 'string',
     },
     newPassword: {
       type: 'string',
-      minLength: 8
+      minLength: 8,
     },
     code: {
-      type: 'string'
+      type: 'string',
     },
     email: {
-      type: 'string'
-    }
-  }
+      type: 'string',
+    },
+  },
 };

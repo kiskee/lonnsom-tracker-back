@@ -1,5 +1,8 @@
 import jwt from 'jsonwebtoken';
-import { jwtMiddleware, AuthenticatedRequest } from '../../src/middlewares/jwtMiddleware';
+import {
+  jwtMiddleware,
+  AuthenticatedRequest,
+} from '../../src/middlewares/jwtMiddleware';
 import { FastifyReply } from 'fastify';
 
 // Mock jsonwebtoken
@@ -14,18 +17,18 @@ describe('jwtMiddleware', () => {
   beforeEach(() => {
     // Reset mocks
     jest.clearAllMocks();
-    
+
     // Setup mock reply
     mockSend = jest.fn();
     mockStatus = jest.fn().mockReturnValue({ send: mockSend });
-    
+
     mockReply = {
-      status: mockStatus
+      status: mockStatus,
     };
 
     // Setup mock request
     mockRequest = {
-      headers: {}
+      headers: {},
     };
 
     // Mock environment variable
@@ -35,7 +38,10 @@ describe('jwtMiddleware', () => {
   it('should return 401 when no authorization header is provided', async () => {
     mockRequest.headers = {};
 
-    await jwtMiddleware(mockRequest as AuthenticatedRequest, mockReply as FastifyReply);
+    await jwtMiddleware(
+      mockRequest as AuthenticatedRequest,
+      mockReply as FastifyReply
+    );
 
     expect(mockStatus).toHaveBeenCalledWith(401);
     expect(mockSend).toHaveBeenCalledWith({ error: 'Token no proporcionado' });
@@ -43,10 +49,13 @@ describe('jwtMiddleware', () => {
 
   it('should return 401 when authorization header does not start with Bearer', async () => {
     mockRequest.headers = {
-      authorization: 'Basic token123'
+      authorization: 'Basic token123',
     };
 
-    await jwtMiddleware(mockRequest as AuthenticatedRequest, mockReply as FastifyReply);
+    await jwtMiddleware(
+      mockRequest as AuthenticatedRequest,
+      mockReply as FastifyReply
+    );
 
     expect(mockStatus).toHaveBeenCalledWith(401);
     expect(mockSend).toHaveBeenCalledWith({ error: 'Token no proporcionado' });
@@ -54,10 +63,13 @@ describe('jwtMiddleware', () => {
 
   it('should return 401 when authorization header is empty', async () => {
     mockRequest.headers = {
-      authorization: ''
+      authorization: '',
     };
 
-    await jwtMiddleware(mockRequest as AuthenticatedRequest, mockReply as FastifyReply);
+    await jwtMiddleware(
+      mockRequest as AuthenticatedRequest,
+      mockReply as FastifyReply
+    );
 
     expect(mockStatus).toHaveBeenCalledWith(401);
     expect(mockSend).toHaveBeenCalledWith({ error: 'Token no proporcionado' });
@@ -66,14 +78,17 @@ describe('jwtMiddleware', () => {
   it('should set user in request when token is valid', async () => {
     const mockDecodedToken = { userId: 123, email: 'test@example.com' };
     const mockToken = 'valid-token';
-    
+
     mockRequest.headers = {
-      authorization: `Bearer ${mockToken}`
+      authorization: `Bearer ${mockToken}`,
     };
 
     (jwt.verify as jest.Mock).mockReturnValue(mockDecodedToken);
 
-    await jwtMiddleware(mockRequest as AuthenticatedRequest, mockReply as FastifyReply);
+    await jwtMiddleware(
+      mockRequest as AuthenticatedRequest,
+      mockReply as FastifyReply
+    );
 
     expect(jwt.verify).toHaveBeenCalledWith(mockToken, undefined);
     expect(mockRequest.user).toEqual(mockDecodedToken);
@@ -83,27 +98,32 @@ describe('jwtMiddleware', () => {
 
   it('should return 401 when token is invalid', async () => {
     const mockToken = 'invalid-token';
-    
+
     mockRequest.headers = {
-      authorization: `Bearer ${mockToken}`
+      authorization: `Bearer ${mockToken}`,
     };
 
     (jwt.verify as jest.Mock).mockImplementation(() => {
       throw new Error('Invalid token');
     });
 
-    await jwtMiddleware(mockRequest as AuthenticatedRequest, mockReply as FastifyReply);
+    await jwtMiddleware(
+      mockRequest as AuthenticatedRequest,
+      mockReply as FastifyReply
+    );
 
     expect(jwt.verify).toHaveBeenCalledWith(mockToken, undefined);
     expect(mockStatus).toHaveBeenCalledWith(401);
-    expect(mockSend).toHaveBeenCalledWith({ error: 'Token inválido o expirado' });
+    expect(mockSend).toHaveBeenCalledWith({
+      error: 'Token inválido o expirado',
+    });
   });
 
   it('should return 401 when token is expired', async () => {
     const mockToken = 'expired-token';
-    
+
     mockRequest.headers = {
-      authorization: `Bearer ${mockToken}`
+      authorization: `Bearer ${mockToken}`,
     };
 
     (jwt.verify as jest.Mock).mockImplementation(() => {
@@ -112,19 +132,27 @@ describe('jwtMiddleware', () => {
       throw error;
     });
 
-    await jwtMiddleware(mockRequest as AuthenticatedRequest, mockReply as FastifyReply);
+    await jwtMiddleware(
+      mockRequest as AuthenticatedRequest,
+      mockReply as FastifyReply
+    );
 
     expect(jwt.verify).toHaveBeenCalledWith(mockToken, undefined);
     expect(mockStatus).toHaveBeenCalledWith(401);
-    expect(mockSend).toHaveBeenCalledWith({ error: 'Token inválido o expirado' });
+    expect(mockSend).toHaveBeenCalledWith({
+      error: 'Token inválido o expirado',
+    });
   });
 
   it('should handle malformed Bearer token', async () => {
     mockRequest.headers = {
-      authorization: 'Bearer'
+      authorization: 'Bearer',
     };
 
-    await jwtMiddleware(mockRequest as AuthenticatedRequest, mockReply as FastifyReply);
+    await jwtMiddleware(
+      mockRequest as AuthenticatedRequest,
+      mockReply as FastifyReply
+    );
 
     expect(mockStatus).toHaveBeenCalledWith(401);
     expect(mockSend).toHaveBeenCalledWith({ error: 'Token no proporcionado' });
@@ -132,16 +160,21 @@ describe('jwtMiddleware', () => {
 
   it('should handle Bearer token with empty token part', async () => {
     mockRequest.headers = {
-      authorization: 'Bearer '
+      authorization: 'Bearer ',
     };
 
     (jwt.verify as jest.Mock).mockImplementation(() => {
       throw new Error('Invalid token');
     });
 
-    await jwtMiddleware(mockRequest as AuthenticatedRequest, mockReply as FastifyReply);
+    await jwtMiddleware(
+      mockRequest as AuthenticatedRequest,
+      mockReply as FastifyReply
+    );
 
     expect(mockStatus).toHaveBeenCalledWith(401);
-    expect(mockSend).toHaveBeenCalledWith({ error: 'Token inválido o expirado' });
+    expect(mockSend).toHaveBeenCalledWith({
+      error: 'Token inválido o expirado',
+    });
   });
 });

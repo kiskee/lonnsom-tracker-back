@@ -14,11 +14,12 @@ afterEach(() => {
 });
 
 describe('getUserFromRequest', () => {
-  const mockRequest = (authHeader?: string): FastifyRequest => ({
-    headers: {
-      authorization: authHeader
-    }
-  } as FastifyRequest);
+  const mockRequest = (authHeader?: string): FastifyRequest =>
+    ({
+      headers: {
+        authorization: authHeader,
+      },
+    }) as FastifyRequest;
 
   it('should return decoded user when valid Bearer token is provided', () => {
     const mockUser = { id: 1, email: 'test@example.com' };
@@ -64,8 +65,14 @@ describe('getUserFromRequest', () => {
     const req = mockRequest('Bearer invalid-token');
     const result = getUserFromRequest(req);
 
-    expect(mockedJwt.verify).toHaveBeenCalledWith('invalid-token', 'test-secret');
-    expect(consoleSpy).toHaveBeenCalledWith('Error al obtener usuario desde el request:', 'Invalid token');
+    expect(mockedJwt.verify).toHaveBeenCalledWith(
+      'invalid-token',
+      'test-secret'
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Error al obtener usuario desde el request:',
+      'Invalid token'
+    );
     expect(result).toBeNull();
 
     consoleSpy.mockRestore();

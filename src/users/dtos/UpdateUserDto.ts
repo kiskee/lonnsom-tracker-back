@@ -13,7 +13,8 @@ export class UpdateUserDto {
 
   constructor(data: UpdateUserRequest) {
     if (data.email) this.email = data.email;
-    if (data.email_verified !== undefined) this.email_verified = data.email_verified;
+    if (data.email_verified !== undefined)
+      this.email_verified = data.email_verified;
     if (data.family_name) this.family_name = data.family_name;
     if (data.given_name) this.given_name = data.given_name;
     if (data.name) this.name = data.name;

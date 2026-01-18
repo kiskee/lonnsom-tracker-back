@@ -2,24 +2,30 @@
 const mockSend = jest.fn();
 
 jest.mock('@aws-sdk/client-dynamodb', () => ({
-  DynamoDBClient: jest.fn()
+  DynamoDBClient: jest.fn(),
 }));
 
 jest.mock('@aws-sdk/lib-dynamodb', () => ({
   DynamoDBDocumentClient: {
-    from: jest.fn(() => ({ send: mockSend }))
+    from: jest.fn(() => ({ send: mockSend })),
   },
   PutCommand: jest.fn(),
   GetCommand: jest.fn(),
   QueryCommand: jest.fn(),
   UpdateCommand: jest.fn(),
-  DeleteCommand: jest.fn()
+  DeleteCommand: jest.fn(),
 }));
 
 import { NoteRepository } from '../../../src/notes/repository/NoteRepository';
 import { CreateNoteDto } from '../../../src/notes/dtos/createNoteDto';
 import { UpdateNoteDto } from '../../../src/notes/dtos/updateNoteDto';
-import { PutCommand, GetCommand, QueryCommand, UpdateCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
+import {
+  PutCommand,
+  GetCommand,
+  QueryCommand,
+  UpdateCommand,
+  DeleteCommand,
+} from '@aws-sdk/lib-dynamodb';
 
 describe('NoteRepository', () => {
   let repository: NoteRepository;
@@ -37,7 +43,7 @@ describe('NoteRepository', () => {
         date: '2024-01-01',
         title: 'Test Note',
         content: 'Test content',
-        sentiment: 'positive'
+        sentiment: 'positive',
       };
       const noteDto = new CreateNoteDto(noteData);
 
@@ -63,7 +69,7 @@ describe('NoteRepository', () => {
         content: 'Test content',
         user: 'user123',
         date: '2024-01-01',
-        sentiment: 'positive'
+        sentiment: 'positive',
       };
 
       mockSend.mockResolvedValueOnce({ Item: mockNote });
@@ -90,8 +96,22 @@ describe('NoteRepository', () => {
     it('should return notes for a user', async () => {
       const userId = 'user123';
       const mockNotes = [
-        { id: '1', title: 'Note 1', user: userId, date: '2024-01-01', content: 'Content 1', sentiment: 'positive' },
-        { id: '2', title: 'Note 2', user: userId, date: '2024-01-02', content: 'Content 2', sentiment: 'neutral' }
+        {
+          id: '1',
+          title: 'Note 1',
+          user: userId,
+          date: '2024-01-01',
+          content: 'Content 1',
+          sentiment: 'positive',
+        },
+        {
+          id: '2',
+          title: 'Note 2',
+          user: userId,
+          date: '2024-01-02',
+          content: 'Content 2',
+          sentiment: 'neutral',
+        },
       ];
 
       mockSend.mockResolvedValueOnce({ Items: mockNotes });
@@ -123,9 +143,13 @@ describe('NoteRepository', () => {
       const noteId = '123';
       const updateData = new UpdateNoteDto({
         title: 'Updated Title',
-        content: 'Updated content'
+        content: 'Updated content',
       });
-      const updatedNote = { id: noteId, title: 'Updated Title', content: 'Updated content' };
+      const updatedNote = {
+        id: noteId,
+        title: 'Updated Title',
+        content: 'Updated content',
+      };
 
       mockSend.mockResolvedValueOnce({ Attributes: updatedNote });
 
@@ -156,9 +180,9 @@ describe('NoteRepository', () => {
         content: undefined,
         sentiment: undefined,
         tags: undefined,
-        update: undefined
+        update: undefined,
       } as unknown as UpdateNoteDto;
-      
+
       await expect(repository.update('123', updateData)).rejects.toThrow(
         'No valid fields to update'
       );

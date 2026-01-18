@@ -10,7 +10,11 @@ export default [
     languageOptions: {
       parser: tsparser,
       ecmaVersion: 2022,
-      sourceType: 'module'
+      sourceType: 'module',
+      globals: {
+        process: 'readonly',
+        console: 'readonly'
+      }
     },
     plugins: {
       '@typescript-eslint': tseslint,

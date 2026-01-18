@@ -42,7 +42,7 @@ export class UserService {
       sub: sub,
       password: password,
       createdAt: timestamp,
-      updatedAt: timestamp
+      updatedAt: timestamp,
     };
 
     return await this.userRepository.create(newUser);
@@ -60,7 +60,10 @@ export class UserService {
     return await this.userRepository.findAll();
   }
 
-  async updateUser(userId: string, updateData: UpdateUserRequest): Promise<User> {
+  async updateUser(
+    userId: string,
+    updateData: UpdateUserRequest
+  ): Promise<User> {
     const existingUser = await this.userRepository.findById(userId);
     if (!existingUser) {
       throw new Error('Usuario no encontrado');
@@ -68,7 +71,9 @@ export class UserService {
 
     // If email is being changed, check if it already exists
     if (updateData.email && updateData.email !== existingUser.email) {
-      const emailExists = await this.userRepository.findByEmail(updateData.email);
+      const emailExists = await this.userRepository.findByEmail(
+        updateData.email
+      );
       if (emailExists) {
         throw new Error('Un usuario con este correo ya existe');
       }
@@ -88,7 +93,7 @@ export class UserService {
     const updateDto = new UpdateUserDto(updatePayload);
 
     await this.userRepository.update(userId, updateDto);
-    return await this.userRepository.findById(userId) as User;
+    return (await this.userRepository.findById(userId)) as User;
   }
 
   async deleteUser(userId: string): Promise<void> {
