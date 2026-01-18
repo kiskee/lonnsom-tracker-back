@@ -26,8 +26,6 @@ export const jwtMiddleware = async (
     const decoded = jwt.verify(token, JWT_SECRET);
     request.user = decoded;
   } catch (err: any) {
-    return reply
-      .status(401)
-      .send({ error: 'Token inválido o expirado' });
+    return reply.status(401).send({ error: `Token inválido o expirado${err}` });
   }
 };

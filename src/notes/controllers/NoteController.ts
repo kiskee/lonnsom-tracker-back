@@ -48,7 +48,7 @@ export class NoteController {
   private async createNote(
     request: FastifyRequest<{ Body: CreateNoteRequest }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     try {
       const note = await this.noteService.createNote(request.body);
       reply.code(201).send(note);
@@ -60,7 +60,7 @@ export class NoteController {
   private async getNoteById(
     request: FastifyRequest<{ Params: { id: string } }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     try {
       const note = await this.noteService.getNoteById(request.params.id);
       reply.code(200).send(note);
@@ -72,7 +72,7 @@ export class NoteController {
   private async getNotesByUserId(
     request: FastifyRequest<{ Params: { userId: string } }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     try {
       const notes = await this.noteService.getNotesByUserId(
         request.params.userId
@@ -89,7 +89,7 @@ export class NoteController {
       Body: UpdateNoteRequest;
     }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     try {
       await this.noteService.updateNote(request.params.id, request.body);
       reply.code(200).send({ message: 'Nota actualizada correctamente' });
@@ -101,7 +101,7 @@ export class NoteController {
   private async deleteNote(
     request: FastifyRequest<{ Params: { id: string } }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     try {
       await this.noteService.deleteNote(request.params.id);
       reply.code(200).send({ message: 'Nota eliminada correctamente' });

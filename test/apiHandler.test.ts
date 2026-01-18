@@ -95,20 +95,16 @@ const createMockContext = (overrides: Partial<Context> = {}): Context => ({
   awsRequestId: 'test-request-id',
   logGroupName: '/aws/lambda/test-function',
   logStreamName: '2023/01/01/[$LATEST]test',
-  getRemainingTimeInMillis: () => 30000,
-  done: () => {},
-  fail: () => {},
-  succeed: () => {},
+  getRemainingTimeInMillis: (): number => 30000,
+  done: (): void => {},
+  fail: (): void => {},
+  succeed: (): void => {},
   ...overrides,
 });
 
 describe('apiHandler', () => {
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
-  });
-
-  afterAll(async () => {
-    await mockApp.close();
   });
 
   it('should call proxy with event and context', async () => {

@@ -115,7 +115,7 @@ describe('jwtMiddleware', () => {
     expect(jwt.verify).toHaveBeenCalledWith(mockToken, undefined);
     expect(mockStatus).toHaveBeenCalledWith(401);
     expect(mockSend).toHaveBeenCalledWith({
-      error: 'Token inválido o expirado',
+      error: 'Token inválido o expiradoError: Invalid token',
     });
   });
 
@@ -140,7 +140,7 @@ describe('jwtMiddleware', () => {
     expect(jwt.verify).toHaveBeenCalledWith(mockToken, undefined);
     expect(mockStatus).toHaveBeenCalledWith(401);
     expect(mockSend).toHaveBeenCalledWith({
-      error: 'Token inválido o expirado',
+      error: 'Token inválido o expiradoTokenExpiredError: Token expired',
     });
   });
 
@@ -174,7 +174,7 @@ describe('jwtMiddleware', () => {
 
     expect(mockStatus).toHaveBeenCalledWith(401);
     expect(mockSend).toHaveBeenCalledWith({
-      error: 'Token inválido o expirado',
+      error: 'Token inválido o expiradoError: Invalid token',
     });
   });
 });

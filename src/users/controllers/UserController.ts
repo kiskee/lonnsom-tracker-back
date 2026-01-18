@@ -65,7 +65,7 @@ export class UserController {
   private async createUser(
     request: FastifyRequest<{ Body: CreateUserRequest }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     try {
       const user = await this.userService.createUser(request.body);
       const { password, ...userResponse } = user;
@@ -75,7 +75,10 @@ export class UserController {
     }
   }
 
-  private async getAllUsers(request: FastifyRequest, reply: FastifyReply) {
+  private async getAllUsers(
+    request: FastifyRequest,
+    reply: FastifyReply
+  ): Promise<void> {
     try {
       const users = await this.userService.getAllUsers();
       const usersResponse = users.map(({ password, ...user }) => user);
@@ -88,7 +91,7 @@ export class UserController {
   private async getUserById(
     request: FastifyRequest<{ Params: { id: string } }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     try {
       const user = await this.userService.getUserById(request.params.id);
       const { password, ...userResponse } = user;
@@ -104,7 +107,7 @@ export class UserController {
       Body: UpdateUserRequest;
     }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     try {
       const user = await this.userService.updateUser(
         request.params.id,
@@ -120,7 +123,7 @@ export class UserController {
   private async deleteUser(
     request: FastifyRequest<{ Params: { id: string } }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     try {
       await this.userService.deleteUser(request.params.id);
       reply.code(204).send();
@@ -132,7 +135,7 @@ export class UserController {
   private async getUserByEmail(
     request: FastifyRequest<{ Params: { email: string } }>,
     reply: FastifyReply
-  ) {
+  ): Promise<void> {
     try {
       const user = await this.userService.getUserByEmail(request.params.email);
       const { password, ...userResponse } = user;

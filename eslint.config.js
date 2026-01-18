@@ -22,7 +22,8 @@ export default [
     },
     rules: {
       'prettier/prettier': 'error',
-      '@typescript-eslint/no-unused-vars': 'error',
+      'no-unused-vars': ['error', { 'ignoreRestSiblings': true }],
+      '@typescript-eslint/no-unused-vars': ['error', { 'ignoreRestSiblings': true }],
       '@typescript-eslint/explicit-function-return-type': 'warn'
     }
   },
