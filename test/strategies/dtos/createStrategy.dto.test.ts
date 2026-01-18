@@ -1,4 +1,7 @@
-import { CreateStrategyDto, CreateStrategyRequest } from '../../../src/strategies/dtos/createStrategy.dto';
+import {
+  CreateStrategyDto,
+  CreateStrategyRequest,
+} from '../../../src/strategies/dtos/createStrategy.dto';
 
 describe('CreateStrategyDto', () => {
   it('should create CreateStrategyDto with all required fields', () => {
@@ -8,7 +11,7 @@ describe('CreateStrategyDto', () => {
       exitType: 'stop-loss',
       user: 'user123',
       date: '2024-01-01T00:00:00.000Z',
-      update: '2024-01-01T12:00:00.000Z'
+      update: '2024-01-01T12:00:00.000Z',
     };
 
     const dto = new CreateStrategyDto(data);
@@ -29,13 +32,15 @@ describe('CreateStrategyDto', () => {
       entryType: 'breakout',
       exitType: 'stop-loss',
       user: 'user123',
-      date: '2024-01-01T00:00:00.000Z'
+      date: '2024-01-01T00:00:00.000Z',
     };
 
     const dto = new CreateStrategyDto(data);
 
     expect(dto.id).toBeDefined();
-    expect(dto.id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+    expect(dto.id).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    );
   });
 
   it('should use provided id when given', () => {
@@ -46,7 +51,7 @@ describe('CreateStrategyDto', () => {
       entryType: 'breakout',
       exitType: 'stop-loss',
       user: 'user123',
-      date: '2024-01-01T00:00:00.000Z'
+      date: '2024-01-01T00:00:00.000Z',
     };
 
     const dto = new CreateStrategyDto(data);
@@ -60,7 +65,7 @@ describe('CreateStrategyDto', () => {
       entryType: 'breakout',
       exitType: 'stop-loss',
       user: 'user123',
-      date: '2024-01-01T00:00:00.000Z'
+      date: '2024-01-01T00:00:00.000Z',
     };
 
     const dto = new CreateStrategyDto(data);
@@ -76,7 +81,7 @@ describe('CreateStrategyDto', () => {
       exitType: 'stop-loss',
       user: 'user123',
       date: '2024-01-01T00:00:00.000Z',
-      update: updateTime
+      update: updateTime,
     };
 
     const dto = new CreateStrategyDto(data);

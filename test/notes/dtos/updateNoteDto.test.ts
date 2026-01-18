@@ -1,4 +1,7 @@
-import { UpdateNoteDto, UpdateNoteRequest } from '../../../src/notes/dtos/updateNoteDto';
+import {
+  UpdateNoteDto,
+  UpdateNoteRequest,
+} from '../../../src/notes/dtos/updateNoteDto';
 
 describe('UpdateNoteDto', () => {
   it('should create UpdateNoteDto with all fields', () => {
@@ -7,7 +10,7 @@ describe('UpdateNoteDto', () => {
       content: 'Updated content',
       sentiment: 'positive',
       tags: ['tag1', 'tag2'],
-      update: '2024-01-01T00:00:00.000Z'
+      update: '2024-01-01T00:00:00.000Z',
     };
 
     const dto = new UpdateNoteDto(data);
@@ -21,7 +24,7 @@ describe('UpdateNoteDto', () => {
 
   it('should create UpdateNoteDto with partial fields', () => {
     const data: UpdateNoteRequest = {
-      title: 'Only Title'
+      title: 'Only Title',
     };
 
     const dto = new UpdateNoteDto(data);
@@ -36,7 +39,7 @@ describe('UpdateNoteDto', () => {
 
   it('should auto-generate update timestamp when not provided', () => {
     const data: UpdateNoteRequest = {
-      title: 'Test Title'
+      title: 'Test Title',
     };
 
     const dto = new UpdateNoteDto(data);
@@ -50,7 +53,7 @@ describe('UpdateNoteDto', () => {
       title: undefined,
       content: undefined,
       sentiment: undefined,
-      tags: undefined
+      tags: undefined,
     };
 
     const dto = new UpdateNoteDto(data);

@@ -1,4 +1,7 @@
-import { CreateNoteDto, CreateNoteRequest } from '../../../src/notes/dtos/createNoteDto';
+import {
+  CreateNoteDto,
+  CreateNoteRequest,
+} from '../../../src/notes/dtos/createNoteDto';
 
 describe('CreateNoteDto', () => {
   it('should create CreateNoteDto with all required fields', () => {
@@ -8,7 +11,7 @@ describe('CreateNoteDto', () => {
       user: 'user123',
       date: '2024-01-01T00:00:00.000Z',
       sentiment: 'positive',
-      tags: ['tag1', 'tag2']
+      tags: ['tag1', 'tag2'],
     };
 
     const dto = new CreateNoteDto(data);
@@ -29,13 +32,15 @@ describe('CreateNoteDto', () => {
       content: 'Test content',
       user: 'user123',
       date: '2024-01-01T00:00:00.000Z',
-      sentiment: 'positive'
+      sentiment: 'positive',
     };
 
     const dto = new CreateNoteDto(data);
 
     expect(dto.id).toBeDefined();
-    expect(dto.id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+    expect(dto.id).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    );
   });
 
   it('should use provided id when given', () => {
@@ -46,7 +51,7 @@ describe('CreateNoteDto', () => {
       content: 'Test content',
       user: 'user123',
       date: '2024-01-01T00:00:00.000Z',
-      sentiment: 'positive'
+      sentiment: 'positive',
     };
 
     const dto = new CreateNoteDto(data);
@@ -60,7 +65,7 @@ describe('CreateNoteDto', () => {
       content: 'Test content',
       user: 'user123',
       date: '2024-01-01T00:00:00.000Z',
-      sentiment: 'positive'
+      sentiment: 'positive',
     };
 
     const dto = new CreateNoteDto(data);
@@ -76,7 +81,7 @@ describe('CreateNoteDto', () => {
       user: 'user123',
       date: '2024-01-01T00:00:00.000Z',
       sentiment: 'positive',
-      update: updateTime
+      update: updateTime,
     };
 
     const dto = new CreateNoteDto(data);

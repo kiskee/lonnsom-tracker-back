@@ -1,4 +1,7 @@
-import { UpdateStrategyDto, UpdateStrategyRequest } from '../../../src/strategies/dtos/updateStrategy.dto';
+import {
+  UpdateStrategyDto,
+  UpdateStrategyRequest,
+} from '../../../src/strategies/dtos/updateStrategy.dto';
 
 describe('UpdateStrategyDto', () => {
   it('should create UpdateStrategyDto with all fields', () => {
@@ -6,7 +9,7 @@ describe('UpdateStrategyDto', () => {
       strategyName: 'Updated Strategy',
       entryType: 'breakout',
       exitType: 'stop-loss',
-      update: '2024-01-01T00:00:00.000Z'
+      update: '2024-01-01T00:00:00.000Z',
     };
 
     const dto = new UpdateStrategyDto(data);
@@ -19,7 +22,7 @@ describe('UpdateStrategyDto', () => {
 
   it('should create UpdateStrategyDto with partial fields', () => {
     const data: UpdateStrategyRequest = {
-      strategyName: 'Only Name'
+      strategyName: 'Only Name',
     };
 
     const dto = new UpdateStrategyDto(data);
@@ -33,7 +36,7 @@ describe('UpdateStrategyDto', () => {
 
   it('should auto-generate update timestamp when not provided', () => {
     const data: UpdateStrategyRequest = {
-      strategyName: 'Test Strategy'
+      strategyName: 'Test Strategy',
     };
 
     const dto = new UpdateStrategyDto(data);
@@ -46,7 +49,7 @@ describe('UpdateStrategyDto', () => {
     const data: UpdateStrategyRequest = {
       strategyName: undefined,
       entryType: undefined,
-      exitType: undefined
+      exitType: undefined,
     };
 
     const dto = new UpdateStrategyDto(data);
